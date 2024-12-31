@@ -1,0 +1,5 @@
+# Ignore everything in the pipelines folder
+pipelines/
+
+# Allow the .gitignore file to remain
+!pipelines/.gitignore
