@@ -1,4 +1,4 @@
-import groovy.json.jsonSlurper
+import groovy.json.JsonSlurper
 
 def call(String key) {
     // Path to the JSON file
