@@ -1,6 +1,6 @@
 def call() {
     script {
-        def tag = "5.0.1" //Default tag
+        def tag = "1.0.1" //Default tag
         if (fileExists('tag.txt')) {
             def lastTag = readFile('tag.txt').trim()
             def parts = lastTag.tokenize('.')
