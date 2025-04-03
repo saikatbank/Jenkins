@@ -2,6 +2,16 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
     // Pull the latest version repository using pullGitRepo
     pullGitRepo(releaseRepo, branch, credentialsId)
 
+    // Pull the latest changes to avoid conflicts
+    withCredentials([usernamePassword(credentialsId: credentialsId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+        sh """
+            git config user.name "dev"
+            git config user.email "dev@sproutsai.com"
+            git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/sproutsai-engg/release.git
+            git pull --rebase origin ${branch}   # Pull latest changes before modifying
+        """
+    }
+
     // Ensure we are on the correct branch
     sh "git checkout ${branch}"
 
