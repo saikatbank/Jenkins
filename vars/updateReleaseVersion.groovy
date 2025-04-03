@@ -1,7 +1,6 @@
-def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-engg/release.git") {
-    // Clone the version repository
-    sh "rm -rf release || true"
-    sh "git clone ${releaseRepo} release"
+def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-engg/release.git", String branch = "main", String credentialsId = "your-credentials-id") {
+    // Pull the latest version repository using pullGitRepo
+    pullGitRepo(releaseRepo, branch, credentialsId)
 
     // Read current version
     def jsonText = readFile("release/release-versions.json")
@@ -27,7 +26,7 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
         git config user.email "dev@sproutsai.com"
         git add release-versions.json
         git commit -m "Updated ${serviceName} deployment count to ${newDeployCount}"
-        git push origin main
+        git push origin ${branch}
     """
 
     // Generate the new image tag
