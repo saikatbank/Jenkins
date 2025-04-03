@@ -18,14 +18,17 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
     // Write the updated JSON back to file
     writeJSON file: "release-versions.json", json: jsonData, pretty: 4
 
-    // Commit and push the updated version
-    sh """
-        git config user.name "dev"
-        git config user.email "dev@sproutsai.com"
-        git add release-versions.json
-        git commit -m "Updated ${serviceName} deployment count to ${newDeployCount}"
-        git push origin ${branch}
-    """
+ // Set up Git authentication for push
+    withCredentials([usernamePassword(credentialsId: credentialsId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+        sh """
+            git config user.name "dev"
+            git config user.email "dev@sproutsai.com"
+            git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/sproutsai-engg/release.git
+            git add release-versions.json
+            git commit -m "Updated ${serviceName} deployment count to ${newDeployCount}"
+            git push origin ${branch}
+        """
+    }
 
     // Generate the new image tag
     env.NEW_TAG = "${currentRelease}.${newDeployCount}"
