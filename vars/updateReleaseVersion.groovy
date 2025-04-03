@@ -1,4 +1,4 @@
-def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-engg/release.git", String branch = "main", String credentialsId = "your-credentials-id") {
+def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-engg/release.git", String branch = "main", String credentialsId = "GitPullCredential") {
     // Pull the latest version repository using pullGitRepo
     pullGitRepo(releaseRepo, branch, credentialsId)
 
