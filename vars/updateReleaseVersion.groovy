@@ -12,7 +12,7 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
                 steps {
                     script {
                         sh "rm -rf release-versioning || true"
-                        sh "git clone ${releaseRepo} release-versioning"
+                        sh "git clone ${releaseRepo} release"
                     }
                 }
             }
