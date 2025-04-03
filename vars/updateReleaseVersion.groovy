@@ -4,7 +4,7 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
 
     // Read current version
     def jsonText = readFile("release-versions.json")
-    def jsonData = new groovy.json.JsonSlurper().parseText(jsonText)
+    def jsonData = new groovy.json.JsonSlurper().parseText(jsonText) as HashMap
 
     def currentRelease = jsonData.release
     def deployCount = jsonData.services[serviceName] ?: 0
