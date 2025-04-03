@@ -1,19 +1,6 @@
 def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-engg/release.git", String branch = "main", String credentialsId = "GitPullCredential") {
-    // Pull the latest version repository using pullGitRepo
+    // Pull the latest code
     pullGitRepo(releaseRepo, branch, credentialsId)
-
-    // Pull the latest changes to avoid conflicts
-    withCredentials([usernamePassword(credentialsId: credentialsId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-        sh """
-            git config user.name "dev"
-            git config user.email "dev@sproutsai.com"
-            git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/sproutsai-engg/release.git
-            git pull --rebase origin ${branch}   # Pull latest changes before modifying
-        """
-    }
-
-    // Ensure we are on the correct branch
-    sh "git checkout ${branch}"
 
     // Read current version using readJSON
     def jsonData = readJSON file: "release-versions.json"
@@ -28,12 +15,16 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
     // Write the updated JSON back to file
     writeJSON file: "release-versions.json", json: jsonData, pretty: 4
 
- // Set up Git authentication for push
+    // Push updated file to GitHub
     withCredentials([usernamePassword(credentialsId: credentialsId, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
         sh """
             git config user.name "dev"
             git config user.email "dev@sproutsai.com"
             git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/sproutsai-engg/release.git
+            
+            # Pull latest changes before pushing
+            git pull --rebase origin ${branch}
+            
             git add release-versions.json
             git commit -m "Updated ${serviceName} deployment count to ${newDeployCount}"
             git push origin ${branch}
