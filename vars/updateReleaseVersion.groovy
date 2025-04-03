@@ -3,7 +3,7 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
     pullGitRepo(releaseRepo, branch, credentialsId)
 
     // Read current version
-    def jsonText = readFile("release/release-versions.json")
+    def jsonText = readFile("release-versions.json")
     def jsonData = new groovy.json.JsonSlurper().parseText(jsonText)
 
     def currentRelease = jsonData.release
@@ -15,8 +15,8 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
     // Update JSON file using `jq`
     sh """
         jq --arg SERVICE "${serviceName}" --argjson COUNT ${newDeployCount} \
-        '.services[\$SERVICE] = \$COUNT' release/release-versions.json \
-        > release/tmp_versions.json && mv release/tmp_versions.json release/release-versions.json
+        '.services[\$SERVICE] = \$COUNT' release-versions.json \
+        > tmp_versions.json && mv tmp_versions.json release-versions.json
     """
 
     // Commit and push the updated version
