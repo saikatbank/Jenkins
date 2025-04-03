@@ -17,7 +17,6 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
 
     // Commit and push the updated version
     sh """
-        cd release
         git config user.name "dev"
         git config user.email "dev@sproutsai.com"
         git add release-versions.json
