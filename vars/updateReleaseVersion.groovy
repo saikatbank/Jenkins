@@ -2,6 +2,9 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
     // Pull the latest version repository using pullGitRepo
     pullGitRepo(releaseRepo, branch, credentialsId)
 
+    // Ensure we are on the correct branch
+    sh "git checkout ${branch}"
+
     // Read current version using readJSON
     def jsonData = readJSON file: "release-versions.json"
 
@@ -21,7 +24,7 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
         git config user.email "dev@sproutsai.com"
         git add release-versions.json
         git commit -m "Updated ${serviceName} deployment count to ${newDeployCount}"
-        git push
+        git push origin ${branch}
     """
 
     // Generate the new image tag
