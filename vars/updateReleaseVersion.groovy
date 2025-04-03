@@ -25,15 +25,17 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
             # Stash changes before pulling
             git stash
             
-            # Pull latest changes before pushing
+            # Fetch and rebase to ensure latest changes
             git pull --rebase origin ${branch}
 
             # Apply stashed changes
-            git stash pop
+            git stash pop || echo "No changes to apply from stash"
 
             git add release-versions.json
             git commit -m "Updated ${serviceName} deployment count to ${newDeployCount}"
-            git push origin ${branch}
+
+            # Force push to resolve non-fast-forward errors
+            git push --force-with-lease origin ${branch}
         """
     }
 
