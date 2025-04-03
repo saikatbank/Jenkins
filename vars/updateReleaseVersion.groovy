@@ -22,9 +22,15 @@ def call(String serviceName, String releaseRepo = "https://github.com/sproutsai-
             git config user.email "dev@sproutsai.com"
             git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/sproutsai-engg/release.git
             
+            # Stash changes before pulling
+            git stash
+            
             # Pull latest changes before pushing
             git pull --rebase origin ${branch}
-            
+
+            # Apply stashed changes
+            git stash pop
+
             git add release-versions.json
             git commit -m "Updated ${serviceName} deployment count to ${newDeployCount}"
             git push origin ${branch}
